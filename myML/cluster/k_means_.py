@@ -28,7 +28,7 @@ class KMeans():
     收敛判定的界限
 
     """
-    def __init__(self,n_clusters=8,n_init=10, max_iter=300, tol=0.0001):
+    def __init__(self, n_clusters=8, n_init=10, max_iter=300, tol=0.0001):
         self.n_clusters = n_clusters
         self.max_iter = max_iter
         self.tol = tol
@@ -43,10 +43,20 @@ class KMeans():
         if size_of_data<self.n_clusters:
             raise ValueError(f"样本量{size_of_data}比K（{self.n_clusters}）小了……")
         return size_of_data
-    def fit(self,X):
+
+    def fit(self, X):
         """拟合"""
         size_of_data = self._check_fit_data(X)#先检查一下
         for _ in range(self.n_init):
-            init_choice = np.random.choice(size_of_data, self.n_clusters,replace=False)#不放回抽样
+            init_choice = np.random.choice(size_of_data, self.n_clusters, replace=False)#不放回抽样
             init_points = X[init_choice]
+            y_label = np.zeros((X.shape[0], 1)) #分配一组分类标签
+            result = []
+            for i in range(self.n_clusters):
+                temp = X-init_points[i, :]
+                #print(temp)
+                result.append(np.dot(temp, temp.T))
+                #print(result)
+            y_label
+
 
