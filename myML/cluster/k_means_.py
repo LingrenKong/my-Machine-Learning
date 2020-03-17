@@ -33,6 +33,7 @@ class KMeans():
         self.max_iter = max_iter
         self.tol = tol
         self.n_init = n_init
+        self.y_label = None
 
     def _check_fit_data(self, X):
         """监测样本量是不是比K大"""
@@ -47,16 +48,30 @@ class KMeans():
     def fit(self, X):
         """拟合"""
         size_of_data = self._check_fit_data(X)#先检查一下
+        modelset = []
         for _ in range(self.n_init):
+            score = False
             init_choice = np.random.choice(size_of_data, self.n_clusters, replace=False)#不放回抽样
-            init_points = X[init_choice]
-            y_label = np.zeros((X.shape[0], 1)) #分配一组分类标签
-            result = []
-            for i in range(self.n_clusters):
-                temp = X-init_points[i, :]
-                #print(temp)
-                result.append(np.dot(temp, temp.T))
-                #print(result)
-            y_label
+            centroid_points = X[init_choice,:]
+            print("初始化中心点为：",centroid_points)
+            y_label = np.zeros((X.shape[0], 1)) #分类标签初始化
+            dist = np.zeros((X.shape[0], self.n_clusters)) #距离矩阵初始化
+            for _ in range(self.max_iter):
+                for i in range(self.n_clusters):
+                    temp = X-centroid_points[i, :]
+                    dist[:,i] =np.sum(temp**2,axis=1)
+                y_label = np.argmin(dist, axis=1)
+                print("分配的类标标签为\n", y_label)
+                for i in range(self.n_clusters):
+                    centroid_points[i, :] = np.mean(X[y_label==i],axis=0)
+                print("重新根据均值分配中心点\n",centroid_points)
+                if score and (score-np.sum(np.min(dist, axis=1)))<self.tol:
+                    modelset.append((score,y_label,centroid_points))
+                    break
+                else:
+                    score = np.sum(np.min(dist, axis=1))
+                print('score:',score)
+        print(modelset)
+        return sorted(modelset, key=lambda x:x[0])[0]
 
 
