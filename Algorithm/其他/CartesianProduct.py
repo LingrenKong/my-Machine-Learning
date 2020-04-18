@@ -67,7 +67,4 @@ if __name__ == "__main__":
     for i in output:
         print(i)
 
-    allresult = list(c.run())
-    collect = []
-    for i in range(1, 13):
-        collect.extend(itertools.combinations(allresult, i))
+
