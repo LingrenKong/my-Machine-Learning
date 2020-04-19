@@ -5,6 +5,7 @@ Created on Tue Feb 25 13:54:22 2020
 @author: 1551086871@qq.com, Lingren Kong, github: https://github.com/LingrenKong
 """
 import numpy as np
+import matplotlib.pyplot as plt
 
 class KMeans():
     """KMeans算法
@@ -59,7 +60,7 @@ class KMeans():
             for _ in range(self.max_iter):
                 for i in range(self.n_clusters):
                     temp = X-centroid_points[i, :]
-                    dist[:,i] =np.sum(temp**2,axis=1)
+                    dist[:,i] = np.sqrt(np.sum(temp**2,axis=1))
                 y_label = np.argmin(dist, axis=1)
                 print("分配的类标标签为\n", y_label)
                 for i in range(self.n_clusters):
@@ -71,7 +72,19 @@ class KMeans():
                 else:
                     score = np.sum(np.min(dist, axis=1))
                 print('score:',score)
-        print(modelset)
+        #print(modelset)
         return sorted(modelset, key=lambda x:x[0])[0]
 
+if __name__ == '__main__':
+    from sklearn.datasets import make_blobs
+    plt.figure(figsize=(12, 12))
 
+    n_samples = 1500
+    random_state = 2333
+    X, y = make_blobs(n_samples=n_samples, random_state=random_state)
+
+    X2,y2 = make_blobs(n_samples=20, random_state=random_state)
+    obj = KMeans(n_clusters=3,n_init=10, max_iter=300)
+    result = obj.fit(X)
+    plt.scatter(X[:, 0], X[:, 1], c=result[1])
+    plt.show()
